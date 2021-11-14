@@ -10,6 +10,7 @@
 #include <consensus/consensus.h>
 #include <consensus/params.h>
 #include <consensus/validation.h>
+#include <rpc/blockchain.h>
 
 /**
  * CChain implementation
