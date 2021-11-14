@@ -79,7 +79,7 @@ UniValue GetNetworkHashPS(int lookup, int height, POW_TYPE powType) {
     // We are either post-fork and with correct powType, or pre-fork and    int64_t minTime = pb->GetBlockTime();
     int64_t minTime = pb->GetBlockTime();
     int64_t maxTime = minTime;
-	arith_uint256 workDiff = GetNumHashes(*pb, powType); 
+	arith_uint256 workDiff = GetBlockProof(*pb, powType); 
 
     for (int i = 0; i < lookup; i++) {
         pb = pb->pprev;
@@ -95,7 +95,7 @@ UniValue GetNetworkHashPS(int lookup, int height, POW_TYPE powType) {
         int64_t time = pb->GetBlockTime();
         minTime = std::min(time, minTime);
         maxTime = std::max(time, maxTime);
-        workDiff += GetNumHashes(*pb, powType); 
+        workDiff += GetBlockProof(*pb, powType); 
     }
 
     // In case there's a situation where minTime == maxTime, we don't want a divide by zero exception.
