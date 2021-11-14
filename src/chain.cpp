@@ -125,7 +125,7 @@ void CBlockIndex::BuildSkip()
 }
 
 
-arith_uint256 GetNumHashes(const CBlockIndex& block, POW_TYPE powType)
+arith_uint256 GetBlockProof(const CBlockIndex& block, POW_TYPE powType)
 {
     arith_uint256 bnTarget;
     bool fNegative;
