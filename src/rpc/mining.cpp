@@ -76,23 +76,32 @@ UniValue GetNetworkHashPS(int lookup, int height, POW_TYPE powType) {
     if (!IsCrowEnabled(pb, Params().GetConsensus()) && powType == POW_TYPE_CROW) {
         return 0;
     }
-    // We are either post-fork and with correct powType, or pre-fork and with correct powType!
-
-    CBlockIndex *pb0 = pb;
-    int64_t minTime = pb0->GetBlockTime();
+    // We are either post-fork and with correct powType, or pre-fork and    int64_t minTime = pb->GetBlockTime();
+    int64_t minTime = pb->GetBlockTime();
     int64_t maxTime = minTime;
+	arith_uint256 workDiff = GetNumHashes(*pb, powType); 
+
     for (int i = 0; i < lookup; i++) {
-        pb0 = pb0->pprev;
-        int64_t time = pb0->GetBlockTime();
+        pb = pb->pprev;
+
+        while(IsCrowEnabled(pb, Params().GetConsensus()) && pb->GetBlockHeader().GetPoWType() != powType) {
+            assert (pb->pprev);
+            pb = pb->pprev;
+        }
+        if(!IsCrowEnabled(pb, Params().GetConsensus()) && powType == POW_TYPE_CROW) {
+            break;
+        }
+
+        int64_t time = pb->GetBlockTime();
         minTime = std::min(time, minTime);
         maxTime = std::max(time, maxTime);
+        workDiff += GetNumHashes(*pb, powType); 
     }
 
     // In case there's a situation where minTime == maxTime, we don't want a divide by zero exception.
     if (minTime == maxTime)
         return 0;
 
-    arith_uint256 workDiff = pb->nChainWork - pb0->nChainWork;
     int64_t timeDiff = maxTime - minTime;
 
     return workDiff.getdouble() / timeDiff;
