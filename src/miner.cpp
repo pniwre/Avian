@@ -730,7 +730,7 @@ int GenerateRavens(bool fGenerate, int nThreads, const CChainParams& chainparams
         LogPrintf("AvianMiner -- Invalid pow algorithm requested");
 
     for (int i = 0; i < nThreads; i++){
-        minerThreads->create_thread(boost::bind(&RavenMiner, boost::cref(chainparams), boost::cref(powType)));
+        minerThreads->create_thread(boost::bind(&AvianMiner, boost::cref(chainparams), boost::cref(powType)));
     }
 
     return(numCores);
