@@ -100,7 +100,7 @@ UniValue GetNetworkHashPS(int lookup, int height, POW_TYPE powType) {
 
 UniValue getnetworkhashps(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() > 2)
+    if (request.fHelp || request.params.size() > 3)
         throw std::runtime_error(
             "getnetworkhashps ( nblocks height powalgo )\n"           
              "\nReturns the estimated network hashes per second based on the last n blocks.\n"
@@ -109,7 +109,7 @@ UniValue getnetworkhashps(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. nblocks     (numeric, optional, default=5) The number of blocks, or -1 for blocks since last difficulty change.\n"
             "2. height      (numeric, optional, default=-1) To estimate at the time of the given height.\n"
-            "3. powalgo     (string, optional) This can be set to \"crow\" or \"x16rt\". If omitted, wallet's default is assumed (-powalgo conf option)\n" // LitecoinCash: MinotaurX
+            "3. powalgo     (string, optional) This can be set to \"minotaurx\" or \"x16rt\". If omitted, wallet's default is assumed (-powalgo conf option)\n" // LitecoinCash: MinotaurX
             "\nResult:\n"
             "x             (numeric) Hashes per second estimated\n"
             "\nExamples:\n"
