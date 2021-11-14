@@ -6,6 +6,10 @@
 
 #include <chain.h>
 #include <validation.h>
+#include <chainparams.h>
+#include <consensus/consensus.h>
+#include <consensus/params.h>
+#include <consensus/validation.h>
 
 /**
  * CChain implementation
@@ -120,7 +124,7 @@ void CBlockIndex::BuildSkip()
 }
 
 
-arith_uint256 GetBlockProof(const CBlockIndex& block, POW_TYPE powType)
+arith_uint256 GetNumHashes(const CBlockIndex& block, POW_TYPE powType)
 {
     arith_uint256 bnTarget;
     bool fNegative;
@@ -131,10 +135,10 @@ arith_uint256 GetBlockProof(const CBlockIndex& block, POW_TYPE powType)
         return 0;
 
     // skip the wrong pow type
-    if (IsCrowEnabled(&block, chainParams.GetConsensus()) && block.GetBlockHeader().GetPoWType() != powType)
+    if (IsCrowEnabled(&block, Params().GetConsensus()) && block.GetBlockHeader().GetPoWType() != powType)
         return 0;
     //  if you ask for minotaurx hashes before it's enabled, there aren't any!
-    if (!IsCrowEnabled(&block, chainParams.GetConsensus()) && powType == POW_TYPE_CROW) 
+    if (!IsCrowEnabled(&block, Params().GetConsensus()) && powType == POW_TYPE_CROW) 
         return 0;
  
     // We need to compute 2**256 / (bnTarget+1), but we can't represent 2**256
