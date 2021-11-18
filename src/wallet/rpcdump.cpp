@@ -675,9 +675,8 @@ UniValue dumpwallet(const JSONRPCRequest& request)
 
 			//hdChainCurrent.GetMnemonic(ssMnemonic, ssMnemonicPassphrase);
 			file << "# HD seed: " << HexStr(pwallet->GetHDChain().vchSeed) << "\n";
-			file << "# mnemonic: " << std::string(vchWords.begin(), vchWords.end()).c_str() << "\n";
-			file << "# mnemonic passphrase: " << std::string(vchPassphrase.begin(), vchPassphrase.end()).c_str() << "\n";
-			file << "# hash of words: " << hash.GetHex() << "\n\n";
+			file << "# mnemonic: " << ssMnemonic << "\n";
+			file << "# mnemonic passphrase: " << ssMnemonicPassphrase << "\n\n";
 		}
     }
     for (std::vector<std::pair<int64_t, CKeyID> >::const_iterator it = vKeyBirth.begin(); it != vKeyBirth.end(); it++) {
