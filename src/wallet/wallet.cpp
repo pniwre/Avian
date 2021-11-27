@@ -180,8 +180,8 @@ void CWallet::DeriveNewChildKey(CWalletDB &walletdb, CKeyMetadata& metadata, CKe
     // for now we use a fixed keypath scheme of m/0'/0'/k
     CExtKey masterKey;             //hd master key
 
-    CExtKey purposeKey;             //key at m/purpose'
-    CExtKey coinTypeKey;            //key at m/purpose'/coin_type'
+    CExtKey purposeKey;            //key at m/purpose'
+    CExtKey coinTypeKey;           //key at m/purpose'/coin_type'
 
     CExtKey accountKey;            //key at m/0'
     CExtKey chainChildKey;         //key at m/0'/0' (external) or m/0'/1' (internal)
@@ -195,32 +195,29 @@ void CWallet::DeriveNewChildKey(CWalletDB &walletdb, CKeyMetadata& metadata, CKe
 
     // derive child key at next index, skip keys already known to the wallet
     do {
-   if(hdChain.IsBip44())
-			{
-				// Use BIP44 keypath scheme i.e. m / purpose' / coin_type' / account' / change / address_index
+        if (hdChain.IsBip44()) {
+            // Use BIP44 keypath scheme i.e. m / purpose' / coin_type' / account' / change / address_index
 
-				// derive m/purpose'
-				masterKey.Derive(purposeKey, 44 | BIP32_HARDENED_KEY_LIMIT);
-				// derive m/purpose'/coin_type'
-				purposeKey.Derive(coinTypeKey, Params().ExtCoinType() | BIP32_HARDENED_KEY_LIMIT);
-				// derive m/purpose'/coin_type'/account'
-				coinTypeKey.Derive(accountKey, nAccountIndex | BIP32_HARDENED_KEY_LIMIT);
-				// derive m/purpose'/coin_type'/account'/change
-				accountKey.Derive(chainChildKey, internal ? 1 : 0);
-				// derive m/purpose'/coin_type'/account'/change/address_index
-				chainChildKey.Derive(childKey, nChildIndex);
-			}
-			else
-			{
-				// Use BIP32 keypath scheme i.e. m / account' / change' / address_index'
+            // derive m/purpose'
+            masterKey.Derive(purposeKey, 44 | BIP32_HARDENED_KEY_LIMIT);
+            // derive m/purpose'/coin_type'
+            purposeKey.Derive(coinTypeKey, Params().ExtCoinType() | BIP32_HARDENED_KEY_LIMIT);
+            // derive m/purpose'/coin_type'/account'
+            coinTypeKey.Derive(accountKey, nAccountIndex | BIP32_HARDENED_KEY_LIMIT);
+            // derive m/purpose'/coin_type'/account'/change
+            accountKey.Derive(chainChildKey, internal ? 1 : 0);
+            // derive m/purpose'/coin_type'/account'/change/address_index
+            chainChildKey.Derive(childKey, nChildIndex);
+        } else {
+            // Use BIP32 keypath scheme i.e. m / account' / change' / address_index'
 
-				// derive m/account'
-				masterKey.Derive(accountKey, nAccountIndex | BIP32_HARDENED_KEY_LIMIT);
-				// derive m/account'/change
-				accountKey.Derive(chainChildKey, BIP32_HARDENED_KEY_LIMIT + (internal ? 1 : 0));
-				// derive m/account'/change/address_index
-				chainChildKey.Derive(childKey, BIP32_HARDENED_KEY_LIMIT |  nChildIndex);
-			}
+            // derive m/account'
+            masterKey.Derive(accountKey, nAccountIndex | BIP32_HARDENED_KEY_LIMIT);
+            // derive m/account'/change
+            accountKey.Derive(chainChildKey, BIP32_HARDENED_KEY_LIMIT + (internal ? 1 : 0));
+            // derive m/account'/change/address_index
+            chainChildKey.Derive(childKey, BIP32_HARDENED_KEY_LIMIT | nChildIndex);
+        }
 
         // increment childkey index
         nChildIndex++;
